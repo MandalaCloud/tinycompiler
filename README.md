@@ -11,7 +11,7 @@
 首先 clone 本仓库:
 
 ```sh
-git clone https://github.com/pku-minic/sysy-cmake-template.git
+git clone https://github.com/MandalaCloud/tinycompiler.git
 ```
 
 在 [compiler-dev](https://github.com/pku-minic/compiler-dev) 环境内, 进入仓库目录后执行:
