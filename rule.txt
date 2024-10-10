@@ -1,0 +1,42 @@
+CompUnit ::= CompUnitList;
+CompUnitList ::= CompUnitListItem | CompUnitList CompUnitListItem;
+CompUnitListItem ::= Decl | FuncDef;
+
+Decl          ::= ConstDecl | VarDecl;
+ConstDecl     ::= "const" BType ConstDef {"," ConstDef} ";";
+VarDecl       ::= "int" VarDef {"," VarDef} ";";
+
+ConstDef      ::= IDENT {"[" ConstExp "]"} "=" ConstInitVal;
+ConstInitVal  ::= ConstExp | "{" [ConstInitVal {"," ConstInitVal}] "}";
+VarDef        ::= IDENT {"[" ConstExp "]"}
+                | IDENT {"[" ConstExp "]"} "=" InitVal;
+InitVal       ::= Exp | "{" [InitVal {"," InitVal}] "}";
+LVal          ::= IDENT {"[" Exp "]"};
+
+FuncDef   ::= "int" IDENT "(" [FuncFParams] ")" Block | "void" IDENT "(" [FuncFParams] ")" Block;
+FuncType  ::= "void" | "int";
+FuncFParams ::= FuncFParam {"," FuncFParam};
+//FuncFParam  ::= "int" IDENT;
+FuncFParam ::= "int" IDENT [ "[" "]" {"[" ConstExp "]"}];
+
+Block       ::= "{" {BlockItem} "}";
+BlockItem   ::= Decl | Stmt;
+Stmt        ::= MatchedStmt | OpenStmt;
+MatchedStmt ::= "return" [Exp] ";" | LVal "=" Exp ";" | [Exp] ";" | Block
+                | "break" ";" | "while" "(" Exp ")" Stmt | "continue" ";"
+                | "if" "(" Exp ")" MatchedStmt "else" MatchedStmtStmt ;
+OpenStmt    ::= "if" "(" Exp ")" Stmt | "if" "(" Exp ")" MatchedStmt "else" OpenStmt ;
+
+Exp         ::= LOrExp;
+PrimaryExp  ::= "(" Exp ")" | LVal | Number;
+UnaryExp    ::= PrimaryExp | UnaryOp UnaryExp | IDENT "(" [FuncRParams] ")";
+FuncRParams ::= Exp {"," Exp};
+MulExp      ::= UnaryExp | MulExp ("*" | "/" | "%") UnaryExp;
+AddExp      ::= MulExp | AddExp ("+" | "-") MulExp;
+Number      ::= INT_CONST;
+UnaryOp     ::= "+" | "-" | "!";
+RelExp      ::= AddExp | RelExp ("<" | ">" | "<=" | ">=") AddExp;
+EqExp       ::= RelExp | EqExp ("==" | "!=") RelExp;
+LAndExp     ::= EqExp | LAndExp "&&" EqExp;
+LOrExp      ::= LAndExp | LOrExp "||" LAndExp;
+ConstExp    ::= Exp;
